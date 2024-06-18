@@ -1,6 +1,6 @@
 from objectpack.ui import BaseEditWindow, make_combo_box
 from m3_ext.ui import all_components as ext
-
+from django.contrib.auth.models import User, Group, Permission
 
 from django.contrib.auth.models import User
 
@@ -115,4 +115,48 @@ class UserEditWindow(UserAddWindow):
         super(UserAddWindow, self).set_params(params)
         self.params = params
         self.title = 'Редактирование пользователя'
+        self.height = 'auto'
+
+class GroupAddWindow(BaseEditWindow):
+    def _init_components(self):
+        """
+        Инициализация компонентов окна.
+        """
+        super(GroupAddWindow, self)._init_components()
+
+        self.field__username = ext.ExtStringField(
+            label='name',
+            name='name',
+            allow_blank=False,
+            anchor='100%'
+        )
+
+        codenames = [(perm.codename, perm.codename) for perm in Permission.objects.all()]
+
+        self.field__codename = make_combo_box(
+            label='Codename',
+            name='codename',
+            allow_blank=False,
+            anchor='100%',
+            data=codenames
+        )
+
+
+    def _do_layout(self):
+        """
+        Размещение компонентов в окне.
+        """
+        super(GroupAddWindow, self)._do_layout()
+        self.form.items.extend([
+            self.field__username,
+            self.field__codename,
+        ])
+
+    def set_params(self, params):
+        """
+        Установка параметров окна создания пользователя.
+        """
+        super(GroupAddWindow, self).set_params(params)
+        self.params = params
+        self.title = 'Create group'
         self.height = 'auto'
