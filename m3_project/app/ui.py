@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.models import ContentType
 from objectpack.ui import BaseEditWindow, make_combo_box
 from m3_ext.ui import all_components as ext
 from django.contrib.auth.models import User, Group, Permission
@@ -159,4 +160,66 @@ class GroupAddWindow(BaseEditWindow):
         super(GroupAddWindow, self).set_params(params)
         self.params = params
         self.title = 'Create group'
+        self.height = 'auto'
+
+
+class PermissionAddWindow(BaseEditWindow):
+    def _init_components(self):
+        """
+        Инициализация компонентов окна.
+        """
+        super(PermissionAddWindow, self)._init_components()
+
+        self.field__name = ext.ExtStringField(
+            label='Name',
+            name='name',
+            allow_blank=False,
+            anchor='100%'
+        )
+
+        self.field__codename = ext.ExtStringField(
+            label='Codename',
+            name='codename',
+            allow_blank=False,
+            anchor='100%',
+        )
+
+        self.field__content_type = make_combo_box(
+            label='Content Type',
+            name='content_type',
+            allow_blank=False,
+            anchor='100%',
+            data=[(ct.id, ct.name) for ct in ContentType.objects.all()],
+            value_field='id',
+            display_field='name'
+        )
+
+    def _do_layout(self):
+        """
+        Размещение компонентов в окне.
+        """
+        super(PermissionAddWindow, self)._do_layout()
+        self.form.items.extend([
+            self.field__name,
+            self.field__codename,
+            self.field__content_type
+        ])
+
+    def set_params(self, params):
+        """
+        Установка параметров окна.
+        """
+        super(PermissionAddWindow, self).set_params(params)
+        self.title = 'Add Permission'
+        self.width = 400
+        self.height = 'auto'
+
+class PermissionEditWindow(PermissionAddWindow):
+    def set_params(self, params):
+        """
+        Установка параметров окна.
+        """
+        super(PermissionAddWindow, self).set_params(params)
+        self.title = 'Edit Permission'
+        self.width = 400
         self.height = 'auto'

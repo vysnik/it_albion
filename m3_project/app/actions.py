@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from django import forms
 from objectpack.ui import ModelEditWindow
-from .ui import UserAddWindow, UserEditWindow, GroupAddWindow
+from .ui import UserAddWindow, UserEditWindow, GroupAddWindow, PermissionAddWindow, PermissionEditWindow
 
 
 # Создание ActionPack для каждой модели
@@ -40,10 +40,13 @@ class GroupPack(ObjectPack):
 
 class PermissionPack(ObjectPack):
     model = Permission
+
     add_to_menu = True
     add_to_desktop = True
 
-    add_window = ModelEditWindow.fabricate(model=model)
-    edit_window = ModelEditWindow.fabricate(model=model)
+    # add_window = ModelEditWindow.fabricate(model=model)
+    add_window = PermissionAddWindow
+    # edit_window = ModelEditWindow.fabricate(model=model)
+    edit_window = PermissionEditWindow
 
 
